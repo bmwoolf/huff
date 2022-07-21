@@ -7,7 +7,7 @@
     calldataload
     0xE0
     shr
-    __FUNC(addTwo) addTwo eq jumpi // jump to implementation of the addTwo function if the selector is equal to the addTwo function selector
+    __FUNC_SIG(addTwo) addTwo eq jumpi // jump to implementation of the addTwo function if the selector is equal to the addTwo function selector
     
     addTwo:
         ADD_TWO()
