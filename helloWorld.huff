@@ -1,0 +1,30 @@
+// dynamic arrays
+// [Byte number]   [DATA]    
+// 0x00            0000000000000000000000000000000000000000000000000000000000000020 // location of the "Hello, world!" data 
+// 0x20            000000000000000000000000000000000000000000000000000000000000000d // length of "Hello, world!" array in bytes
+// 0x40            48656c6c6f2c20776f726c642100000000000000000000000000000000000000 // actual value for "Hello, world!" in hex
+
+
+#define macro MAIN() = takes(0) returns(0) {
+    // memory: 0x00 <-32 bytes-> 0x20 <-32 bytes-> 0x40 <-32 bytes-> end of memory allocation for dynamic array
+    
+    // store the string
+    0x48656c6c6f2c20776f726c6421    // "Hello, world!" in hex
+    0x2d                            // 45
+    mstore                          // store the string in memory
+
+    // store the length of the string
+    0x0d
+    0x20
+    mstore
+
+    // store dynamic offset
+    0x20
+    0x00
+    mstore
+
+    // return 96 bytes
+    0x60 // back
+    0x00 // front
+    return
+}
