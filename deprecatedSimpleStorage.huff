@@ -34,7 +34,7 @@
     // what is 0xe0? 224
     // what is shr?
 
-    // require(bytes4(keccak256(setValue(uin256)))-- why is it necessary to do this anyways?
+    // require(bytes4(keccak256(setValue(uint256)))-- why is it necessary to do this anyways?
     dup1 __FUNC_SIG(setValue) eq setValue jumpi
     dup1 __FUNC_SIG(getValue) eq getValue jumpi
 

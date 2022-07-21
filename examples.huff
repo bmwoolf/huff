@@ -1,0 +1,72 @@
+// function interfaces should be for only external facing functions
+    // what do we do about internal facing functions?
+// constant var: compile time = hardcoded in the bytecode before deployment. cant change it
+// immutable var: set after compile time, less gas efficient. has to be set in the constructor
+
+// does MAIN actually mean fallback function? cuz some solidity contracts dont actually have fallback functions
+
+#define function addWord(uint256) pure returns (uint256)
+
+// storage slot to store the owner address
+#define constant OWNER = FREE_STORAGE_POINTER()
+
+// event for emitting
+#define event WordAdded(uint256 initial, uint256 increment)
+
+// why do we takes(1) but no argument is passed? we arent reading a constant either
+// how do you know when to initialize the input stack? doesnt the stack start from 0 everytime you initialize a transaction?
+// where does the MAIN come from?
+#define macro emitWordAdded(increment) = takes(1) returns(0) {
+    // stack: [initial] --> meaning we put the `initial` variable on the stack
+    <increment>             // stack: [incremement, initial]
+    __EVENT_HASH(WordAdded) // stack: [sig, increment, initial]
+    0x00 0x00               // [mem_start, mem_end, sig, increment, initial]
+    log3                    // clear the stack: []
+    // what is the offset and size- why are thye both 00?
+}
+
+#define macro ONLY_OWNER() = takes (0) returns (0) {
+    caller              // [msg.sender]
+    [OWNER]             // [owner, msg.sender]
+    eq                  // [owner == msg.sender]
+    is_owner jumpi      // [] --> jump to is_owner label if true
+
+    // why do we have two 0's here?
+    0x00 0x00 revert
+
+    is_owner: // keep going with the normal function
+}
+
+#define macro ADD_WORD() = takes (1) returns (1) {
+    // [something]
+
+    ONLY_OWNER()
+
+    dup1                // [something, something] --> takes the thing, and doesnt give it back (consumes)
+    emitWordAdded(0x20) // [something]
+
+    0x20               // [0x20, something]
+    add                // [0x20 + something]
+
+    // returns the stack
+}
+
+#define macro MAIN() = takes (0) returns (0) {
+    // get function signature
+    // when do we know to use calldataload?
+    0x00 calldataload       // [calldata @ 0x00]
+    0xE0 shr                // [func_sig (calldata  @ 0x00 >> 0xE0)] --> 0 >> 224, right shift divides a number by 2
+    // why is this used?
+    // [32] --> [28 bytes, 4 bytes] -- isnt the function signature supposed to be the first 4 bytes?
+    __FUNC_SIG(addWord)     // [func_sig(addWord), func_sig]
+    eq                      // [func_sig == func_sig]
+    add_word jumpi          // [] --> jump to add_word label if true
+
+    0x00 0x00 revert
+
+    add_word:
+        0x04 calldataload   // [input_num]
+        ADD_WORD()          // [result]
+        0x00 mstore         // []
+        0x20 0x00 return
+}
