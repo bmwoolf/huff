@@ -13,7 +13,7 @@
 // event for emitting
 #define event WordAdded(uint256 initial, uint256 increment)
 
-// why do we takes(1) but no argument is passed? we arent reading a constant either
+// why do we use takes(1) but no argument is passed? we arent reading a constant either
 // how do you know when to initialize the input stack? doesnt the stack start from 0 everytime you initialize a transaction?
 // where does the MAIN come from?
 #define macro emitWordAdded(increment) = takes(1) returns(0) {
@@ -52,8 +52,8 @@
 }
 
 #define macro MAIN() = takes (0) returns (0) {
-    // get function signature
-    // when do we know to use calldataload?
+    // need example of calldata vs memory
+    // when do we know to use calldataload? - when it is from an external source
     0x00 calldataload       // [calldata @ 0x00]
     0xE0 shr                // [func_sig (calldata  @ 0x00 >> 0xE0)] --> 0 >> 224, right shift divides a number by 2
     // why is this used?
@@ -69,4 +69,18 @@
         ADD_WORD()          // [result]
         0x00 mstore         // []
         0x20 0x00 return
+}
+
+#define macro MUL_DIV_DOWN_WRAPPER() = takes(0) returns(0) {
+    0x44 calldataload       // [denominator]
+    0x24 calldataload       // [y, denominator]
+    0x04 calldataload       // [x, y, denominator]
+
+    MUL_DIV_DOWN(err)
+
+    0x00 mstore
+    0x20 0x00 return
+
+    err:
+        0x00 0x00 revert
 }
