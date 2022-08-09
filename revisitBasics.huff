@@ -1,0 +1,23 @@
+#define function mint(address,uint256) nonpayable returns (uint256) // 0xc6c3bbe6
+#define function name() view returns (string) // 0x06fdde03
+
+
+#define macro MINT() = takes(0) returns(0) {}
+#define macro NAME() = takes(0) returns(0) {}
+
+// all function calls are routed through main to their respective functions
+// wouldnt it make sense to put a jump table in here?
+    // yes- this is where you select the 4 byte function signature
+#define macro MAIN() = takes(0) returns(0) {
+    0x00 calldataload  0xE0 shr     // stack: []
+    dup1 0xc6c3bbe6 eq mint jumpi
+    dup1 0x06fdde03 eq  name jumpi
+
+    // revert if no signatures match
+    0x00 0x00 revert
+
+    mint:
+        MINT()
+    name:
+        NAME()
+}

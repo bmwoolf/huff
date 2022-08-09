@@ -1,0 +1,22 @@
+{
+  "name": "huff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "functionSigGenerator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmwoolf/huff.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bmwoolf/huff/issues"
+  },
+  "homepage": "https://github.com/bmwoolf/huff#readme",
+  "dependencies": {
+    "web3": "^1.7.5"
+  }
+}
