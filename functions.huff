@@ -1,3 +1,9 @@
+// vyper (python high level)
+// solidity (high level)
+// yul (assembly)
+// huff (assembly, maybe more low level)
+
+
 #define function switchTest(uint256) pure returns(uint256)
 
 #define jumptable SWITCH_TABLE {
@@ -13,13 +19,13 @@
     codecopy
 
     0x04 calldataload   // [input_num]
-    
+
     // revert if num is not between 0 && 3
     dup1
     0x03 lt
     err jumpi
 
-    0x20 mul 
+    0x20 mul
     mload
     jump
 
